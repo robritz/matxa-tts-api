@@ -63,12 +63,12 @@ RUN pip install --no-deps "matcha-tts @ git+${MATCHA_REPO}@${MATCHA_REF}"
 
 # Fail the build here rather than at the first request if the Cython extension
 # or the text front-end are not usable.
-RUN python - <<'PY'
-from matcha.models.matcha_tts import MatchaTTS  # noqa: F401
-from matcha.text import sequence_to_text, text_to_sequence
-from vocos import Vocos  # noqa: F401
-print("graphemes ->", sequence_to_text(text_to_sequence("L'àvia Pepeta col·lecciona cançons.", ["basic_cleaners"])))
-PY
+# (python -c rather than a heredoc: heredocs need BuildKit, which Cloud Build's
+# docker builder does not use.)
+RUN python -c 'from matcha.models.matcha_tts import MatchaTTS; \
+from matcha.text import sequence_to_text, text_to_sequence; \
+from vocos import Vocos; \
+print("graphemes ->", sequence_to_text(text_to_sequence("L'\''àvia Pepeta col·lecciona cançons.", ["basic_cleaners"])))'
 
 # ------------------------------------------------------------------ runtime --
 FROM base AS runtime
