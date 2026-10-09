@@ -1,0 +1,45 @@
+# ---------------------------------------------------------------------------
+# Runtime dependencies for Matcha-TTS *inference* + the HTTP API.
+#
+# The upstream requirements.txt is training-oriented (gradio 3.43, notebook,
+# wandb, optuna, ...) and conflicts with a modern FastAPI stack, so the package
+# itself is installed with --no-deps and only what inference touches is listed
+# here.  Versions are pinned so image builds are reproducible.
+# ---------------------------------------------------------------------------
+
+# --------- torch (CPU wheels come from the extra index in the Dockerfile) ----
+torch==2.2.2
+torchaudio==2.2.2
+
+# --------- Matcha-TTS inference chain ---------------------------------------
+numpy==1.26.4
+scipy==1.11.4
+librosa==0.10.1
+soundfile==0.12.1
+einops==0.7.0
+conformer==0.3.2
+diffusers==0.25.0
+huggingface-hub==0.25.2   # diffusers<0.26 imports cached_download, removed in hub>=0.26
+lightning==2.2.1
+torchmetrics==1.3.1
+Unidecode==1.3.8
+inflect==7.0.0
+matplotlib==3.8.3
+tqdm==4.66.2
+
+# imported by matcha.utils.__init__ (pulled in by matcha.models.matcha_tts)
+hydra-core==1.3.2
+omegaconf==2.3.0
+rich==13.7.1
+gdown==5.1.0
+wget==3.2
+
+# --------- Vocos vocoder (alVoCat); the vocos package ships inside the fork ----
+encodec==0.1.1
+PyYAML==6.0.1
+onnxruntime==1.17.3       # imported at module level by matcha.models.matcha_tts on v2-graphemes
+
+# --------- API ---------------------------------------------------------------
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+pydantic==2.6.4

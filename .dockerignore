@@ -1,0 +1,12 @@
+upstream/
+models/
+out/
+.git/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.wav
+*.ckpt
+.DS_Store
+README.md

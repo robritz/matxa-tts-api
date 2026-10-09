@@ -1,0 +1,37 @@
+services:
+  api:
+    build:
+      context: .
+      args:
+        # Space-separated model names, or "all", to bake checkpoints into the
+        # image. Left empty: they are downloaded on first use into the volume.
+        PREFETCH_MODELS: ""
+        TORCH_INDEX_URL: https://download.pytorch.org/whl/cpu
+    image: matcha-tts-api
+    ports:
+      - "8000:8000"
+    environment:
+      MATCHA_DEFAULT_MODEL: matxa_v2_multiaccent
+      MATCHA_DEVICE: auto          # auto | cpu | cuda
+      MATCHA_PRELOAD: "1"          # load the default model at startup
+      MATCHA_MAX_CONCURRENCY: "1"  # concurrent syntheses per container
+      MATCHA_MAX_TEXT_CHARS: "2000"
+      LOG_LEVEL: INFO
+      OMP_NUM_THREADS: "4"
+    volumes:
+      # Checkpoint cache: survives rebuilds, shared between replicas.
+      - matcha-models:/models
+      # Drop your own *.ckpt files in ./custom-checkpoints to serve them too.
+      - ./custom-checkpoints:/models/custom
+    restart: unless-stopped
+    # Uncomment for NVIDIA GPUs (build with TORCH_INDEX_URL=.../whl/cu121).
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  matcha-models:
