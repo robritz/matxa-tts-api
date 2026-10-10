@@ -87,7 +87,7 @@ USER matcha
 # Optionally bake checkpoints in: space-separated model names, or "all".
 # Note: these live in /models, so mounting a *bind* mount there hides them;
 # a named volume (as in docker-compose.yml) keeps them.
-ARG PREFETCH_MODELS=""
+ARG PREFETCH_MODELS="matxa_v2_multiaccent"
 RUN if [ -n "${PREFETCH_MODELS}" ]; then python scripts/prefetch_models.py ${PREFETCH_MODELS}; fi
 
 ENV MATCHA_DEFAULT_MODEL=matxa_v2_multiaccent \
